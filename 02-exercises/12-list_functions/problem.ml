@@ -2,7 +2,7 @@ open! Base
 
 (* Remember the list functions we wrote in exercises 8-10? Many of those
    functions that we've been writing by hand are actually available in the
-   language in a nice, first class way in the [List] module. 
+   language in a nice, first class way in the [List] module.
 
    Let's take look at some of the useful functions that are given to you. *)
 
@@ -14,10 +14,19 @@ open! Base
    Maybe this looks familiar?  This is almost the same as the [every] function
    we wrote in exercise 11.
 
-   Let's rewrite [simpler_sum] and [simpler_product] using List.fold *) 
+   Let's rewrite [simpler_sum] and [simpler_product] using List.fold *)
 
-let simpler_sum xs = failwith "For you to implement"
-let simpler_product xs = failwith "For you to implement"
+let simpler_sum xs =
+  match xs with
+  | [] -> 0
+  | hd :: tl -> List.fold ~f:( + ) ~init:hd tl
+;;
+
+let simpler_product xs =
+  match xs with
+  | [] -> 1
+  | hd :: tl -> List.fold ~f:( * ) ~init:hd tl
+;;
 
 (** ========== [List.map] ========== **)
 (* [List.map] has the following signature:
@@ -29,8 +38,8 @@ let simpler_product xs = failwith "For you to implement"
 
    Let's write a function that takes in an int list and transforms it into a
    float list. (Hint: you can cast an int to a float using [Float.of_int].) *)
-                       
-let float_of_int xs = failwith "For you to implement"
+
+let float_of_int xs = List.map ~f:Float.of_int xs
 
 (** ========== [List.init] ========== **)
 (* [List.init] has the following signature:
@@ -43,7 +52,7 @@ let float_of_int xs = failwith "For you to implement"
 
    Let's rewrite the [range] function we wrote in problem 9 to use [init].  *)
 
-let range from to_ = failwith "For you to implement"
+let range from to_ = List.init ~f:(fun x -> from + x) (to_ - from)
 
 (** ========== [List.range] ========== **)
 (* Turns out this special case of [List.init] is useful enough that it has it's own 
@@ -64,6 +73,8 @@ let range from to_ = failwith "For you to implement"
    be passed when invoking the function. We'll learn about optional arguments in more 
    detail in exercise 15.*)
 
+let stuff = List.range ~stride:2 10 20
+
 (** ========== [List.iter] ========== **)
 (* [List.iter] has the following signature:
 
@@ -76,7 +87,7 @@ let range from to_ = failwith "For you to implement"
    Let's use [iter] to print a list of ints. Remember that we can use
    [Stdio.printf] to print formatted strings. *)
 
-let print_int_list xs = failwith "For you to implement"
+let print_int_list xs = List.iter ~f:(Stdio.printf "%d ") xs
 
 (* There are many more useful [List] functions, which you can read about here:
    https://ocaml.janestreet.com/ocaml-core/latest/doc/base/Base/List/index.html
@@ -121,7 +132,9 @@ let%test "Testing simpler_sum..." = Int.( = ) 55 (simpler_sum [ 55 ])
 let%test "Testing simpler_sum..." = Int.( = ) 0 (simpler_sum [ 5; -5; 1; -1 ])
 let%test "Testing simpler_sum..." = Int.( = ) 12 (simpler_sum [ 5; 5; 1; 1 ])
 
-let%test "Testing float_of_int..." = [%compare.equal: float list] (float_of_int [1; 2; 3]) [ 1.0; 2.0; 3.0 ]
+let%test "Testing float_of_int..." =
+  [%compare.equal: float list] (float_of_int [ 1; 2; 3 ]) [ 1.0; 2.0; 3.0 ]
+;;
 
 let%test "Testing range..." = [%compare.equal: int list] (range 1 4) [ 1; 2; 3 ]
 

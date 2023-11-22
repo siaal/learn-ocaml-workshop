@@ -2,7 +2,7 @@ open! Base
 
 (* Another non-basic type in OCaml is a tuple. A tuple is an ordered collection
    of values that can each be of a different type. The signature for a tuple is
-   written by separating all the types within the tuple by a [*].  *)
+   written by separating all the types within the tuple by a [*]. *)
 type string_and_int = string * int
 type int_and_string_and_char = int * string * char
 
@@ -22,7 +22,10 @@ let () =
    Write a function that computes the sum of two coordinates. *)
 type coordinate = int * int
 
-let add coord1 coord2 = failwith "For you to implement"
+let add coord1 coord2 =
+  match coord1, coord2 with
+  | (x1, y1), (x2, y2) -> x1 + x2, y1 + y2
+;;
 
 (* Now consider a [name] type containing two [string]s representing the first and
    the last name. *)
@@ -50,16 +53,23 @@ type 'a pair = 'a * 'a
 *)
 
 (* We can construct pairs just like we construct regular tuples *)
-let int_pair : int pair = 5, 7
+let int_pair = 5, 7
 let string_pair : string pair = "foo", "bar"
 let nested_char_pair : char pair pair = ('a', 'b'), ('c', 'd')
 
 (* Write functions to extract the first and second elements from a pair. Their
    signatures can be found in the mli. *)
-let first pair = failwith "For you to implement"
-let second pair = failwith "For you to implement"
+let first pair =
+  match pair with
+  | x, _ -> x
+;;
 
-(* Notice the cool [%compare.equal: int * int] here!  *)
+let second pair =
+  match pair with
+  | _, y -> y
+;;
+
+(* Notice the cool [%compare.equal: int * int] here! *)
 let%test "Testing add..." = [%compare.equal: int * int] (4, 7) (add (5, 3) (-1, 4))
 let%test "Testing first..." = String.( = ) "foo" (first ("foo", "bar"))
 let%test "Testing second..." = Char.( = ) 'b' (second ('a', 'b'))

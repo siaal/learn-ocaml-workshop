@@ -16,9 +16,10 @@ type color =
    exercise 6 for a refresher on pattern matching.) *)
 let to_string color =
   match color with
-  | Red   -> "red"
+  | Red -> "red"
   | Green -> "green"
-  | Blue  -> "blue"
+  | Blue -> "blue"
+;;
 
 (* OCaml variants are in many ways more powerful than Enums because the
    different constructors of your variant can include data in them. Here's an
@@ -35,25 +36,30 @@ let another_card_value : card_value = Number 8
 
 let card_value_to_string card_value =
   match card_value with
-  | Ace      -> "Ace"
-  | King     -> "King"
-  | Queen    -> "Queen"
-  | Jack     -> "Jack"
+  | Ace -> "Ace"
+  | King -> "King"
+  | Queen -> "Queen"
+  | Jack -> "Jack"
   | Number i -> Int.to_string i
+;;
 
 (* Write a function that computes the score of a card (aces should score 11
    and face cards should score 10). *)
 let card_value_to_score card_value =
-  failwith "For you to implement"
+  match card_value with
+  | Ace -> 11
+  | King | Queen | Jack -> 10
+  | Number i -> i
+;;
 
 (* Remember the list type? We can define a list as a variant type too! *)
-type int_list = 
-  | Empty 
+type int_list =
+  | Empty
   | Not_empty of int * int_list
 
 (* OCaml actually allows us to define a list type that can contain any type of
    value, not just integers, by using parametrized types. *)
-type 'a generic_list = 
+type 'a generic_list =
   | Empty
   | Not_empty of 'a * 'a generic_list
 
@@ -62,18 +68,8 @@ type 'a generic_list =
    integer list. *)
 type another_int_list = int generic_list
 
-let%test "Testing card_value_to_score..." =
-  Int.(=) 11 (card_value_to_score Ace)
-
-let%test "Testing card_value_to_score..." =
-  Int.(=) 10 (card_value_to_score King)
-
-let%test "Testing card_value_to_score..." =
-  Int.(=) 10 (card_value_to_score Queen)
-
-let%test "Testing card_value_to_score..." =
-  Int.(=) 10 (card_value_to_score Jack)
-
-let%test "Testing card_value_to_score..." =
-  Int.(=) 5 (card_value_to_score (Number 5))
-
+let%test "Testing card_value_to_score..." = Int.( = ) 11 (card_value_to_score Ace)
+let%test "Testing card_value_to_score..." = Int.( = ) 10 (card_value_to_score King)
+let%test "Testing card_value_to_score..." = Int.( = ) 10 (card_value_to_score Queen)
+let%test "Testing card_value_to_score..." = Int.( = ) 10 (card_value_to_score Jack)
+let%test "Testing card_value_to_score..." = Int.( = ) 5 (card_value_to_score (Number 5))

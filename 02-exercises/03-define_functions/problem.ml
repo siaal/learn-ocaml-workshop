@@ -34,11 +34,10 @@ let add1_float (arg : float) : float = arg +. 1.
 (* Let's define a few more functions below. Remember that you can see the
    function signatures in the mli file. *)
 
-let plus x y = failwith "For you to implement"
-let times x y = failwith "For you to implement"
-let minus x y = failwith "For you to implement"
-let divide x y = failwith "For you to implement"
-
+let plus x y = Int.( + ) x y
+let times x y = Int.( * ) x y
+let minus x y = Int.( - ) x y
+let divide x y = Int.( / ) x y
 let%test "Testing plus..." = Int.( = ) 2 (plus 1 1)
 let%test "Testing plus..." = Int.( = ) 49 (plus (-1) 50)
 let%test "Testing times..." = Int.( = ) 64 (times 8 8)

@@ -7,8 +7,7 @@ let x = ref 0
 (* Then we can access the value in the ref using the [!] operator, and we can
    update it using the [:=] operator. So, we could increment our ref as
    follows. *)
-let () =
-  x := !x + 1
+let () = x := !x + 1
 
 (* Write a function min_and_max which returns a tuple containing the minimum and
    maximum values in a non-empty list of positive integers. Your function should
@@ -18,16 +17,23 @@ let () =
    let's iterate over the list and explicitly maintain refs of the minimum and
    maximum values seen so far instead. *)
 let min_and_max lst =
-  failwith "For you to implement"
+  match lst with
+  | [] -> failwith "must not be empty"
+  | hd :: tl ->
+    let min = ref hd in
+    let max = ref hd in
+    List.iter tl ~f:(fun k -> if k < !min then min := k else if k > !max then max := k);
+    !min, !max
+;;
 
-(* By the way, can you guess how a [ref] is implemented under the hood? 
+(* By the way, can you guess how a [ref] is implemented under the hood?
 
    (Hint: exercise 18.) *)
 
 let%test "Testing min_and_max..." =
-  [%compare.equal: int * int] (min_and_max [5;9;2;4;3]) (2,9) 
+  [%compare.equal: int * int] (min_and_max [ 5; 9; 2; 4; 3 ]) (2, 9)
 ;;
 
 let%test "Testing min_and_max..." =
-  [%compare.equal: int*int] (min_and_max [11;15;7;34]) (7,34)
+  [%compare.equal: int * int] (min_and_max [ 11; 15; 7; 34 ]) (7, 34)
 ;;

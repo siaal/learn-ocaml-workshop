@@ -52,7 +52,7 @@ let simpler_factorial x = up_to 1 times x
    [let simpler_add_every_number_up_to x = up_to 0 ( + ) x]
    [let simpler_factorial x = up_to 1 ( * ) x] *)
 
-(* Now let's try refactoring another example. 
+(* Now let's try refactoring another example.
 
    Remember [sum] and [product]? *)
 let rec sum xs =
@@ -67,17 +67,23 @@ let rec product xs =
   | x :: ys -> times x (product ys)
 ;;
 
-(* These functions look pretty similar too! 
+(* These functions look pretty similar too!
 
    Try factoring out the common parts like we did above. *)
-let rec every answer combine xs = failwith "For you to implement"
+let rec every answer combine xs =
+  let rec hlp lst =
+    match lst with
+    | [] -> answer
+    | hd :: tl -> combine hd (hlp tl)
+  in
+  hlp xs
+;;
 
-(* Can you write a signature in the mli for [every]? How does it compare with [up_to]? 
+(* Can you write a signature in the mli for [every]? How does it compare with [up_to]?
 
    Now, rewrite sum and product in just one line each using [every]. *)
-let simpler_sum xs = failwith "For you to implement"
-let simpler_product xs = failwith "For you to implement"
-
+let simpler_sum xs = every 0 ( + ) xs
+let simpler_product xs = every 1 ( * ) xs
 let%test "Testing simpler_product..." = Int.( = ) 1 (simpler_product [])
 let%test "Testing simpler_product..." = Int.( = ) 55 (simpler_product [ 55 ])
 let%test "Testing simpler_product..." = Int.( = ) 25 (simpler_product [ 5; -5; 1; -1 ])

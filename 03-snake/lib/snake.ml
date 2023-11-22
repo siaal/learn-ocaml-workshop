@@ -13,34 +13,58 @@ type t =
   }
 [@@deriving sexp_of]
 
-(* TODO: Implement [create].
+(* DONE: Implement [create].
 
    Note that at the beginning of the game, the snake will not need to grow at all, so
    [extensions_remaining] should be initialized to 0. *)
-let create ~length = failwith "For you to implement"
+let create ~length =
+  { direction = Right
+  ; extensions_remaining = 0
+  ; locations =
+      List.init length ~f:(fun idx -> { Position.row = 0; col = idx }) |> List.rev
+  }
+;;
 
-(* TODO: Implement [grow_over_next_steps].
+(* DONE: Implement [grow_over_next_steps].
 
    Read over the documentation of this function in the mli.
 
    Notice that this function should not actually grow the snake, but only record that we
    should grow the snake one block for the next [by_how_much] squares. *)
-let grow_over_next_steps t by_how_much = t
+let grow_over_next_steps t by_how_much =
+  { t with extensions_remaining = t.extensions_remaining + by_how_much }
+;;
 
-(* TODO: Implement [locations]. *)
-let locations t = failwith "For you to implement"
+(* DONE: Implement [locations]. *)
+let locations t = t.locations
 
-(* TODO: Implement [head_location]. *)
-let head_location t = { Position.row = 0; col = 0 }
+(* DONE: Implement [head_location]. *)
+let head_location t = List.hd_exn t.locations
 
-(* TODO: Implement [set_direction]. *)
-let set_direction t direction = t
+(* DONE: Implement [set_direction]. *)
+let set_direction t direction = { t with direction }
 
-(* TODO: Implement [step].
+(* DONE: Implement [step].
 
    Read over the documentation of this function in the mli.
 
    [step] should:
    - move the snake forward one block, growing it and updating [t.locations] if necessary
    - check for self collisions *)
-let step t = Some t
+let remove_last lst =
+  match List.rev lst with
+  | [] -> []
+  | _ :: tl -> List.rev tl
+;;
+
+let step ({ direction; extensions_remaining; locations } as t) =
+  let locs, exts =
+    if extensions_remaining > 0
+    then locations, extensions_remaining - 1
+    else remove_last locations, extensions_remaining
+  in
+  let new_pos = Direction.next_position direction (head_location t) in
+  match List.mem locs new_pos ~equal:[%compare.equal: Position.t] with
+  | true -> None
+  | false -> Some { t with locations = new_pos :: locs; extensions_remaining = exts }
+;;

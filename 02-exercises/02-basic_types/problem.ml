@@ -1,5 +1,5 @@
-open! Base
 (** ========= Introduction ========= **)
+open! Base
 (* In OCaml there are 6 basic types: [int], [float], [char], [string], [bool],
    and [unit].
 
@@ -8,7 +8,6 @@ open! Base
 
    Note the keyword [let], which is how we do variable assignment in OCaml. *)
 
-(** ========= Type Signatures ========= **)
 (* [four] is a value with the type int. We write the signature like this:
 
    {| val four : int |}
@@ -21,8 +20,10 @@ open! Base
    above would be written like so:
 
    // C, C++, or Java type signature
-   int four; 
+   int four;
 *)
+
+(** ========= Type Signatures ========= **)
 let four = 4
 
 (* [float_four] is a value with the type float. We write the signature like
@@ -51,7 +52,6 @@ let float_four = 4.
    decimal point. For example, [( + )] allows you to add two ints and [( +. )]
    allows you to add two floats. *)
 
-(** ========== Function Signatures ========== **)
 (* In OCaml, functions are also values! This means that we can write type
    signatures for functions and use [let] for function definitions, just like we
    did above.
@@ -70,11 +70,13 @@ let float_four = 4.
    value of the last statement in that function.
 
    Try implementing [int_average].  *)
-let int_average x y = failwith "For you to implement"
+
+(** ========== Function Signatures ========== **)
+let int_average x y = (x + y) / 2
 
 (* Now try implementing [float_average]. Remember that you can check the mli for
    the type of this function. *)
-let float_average x y = failwith "For you to implement"
+let float_average x y = (x +. y) /. 2.0
 
 (* Note that in OCaml, parenthese are not necessary when applying a function! So
    the following expression computes the average of 10 and 20:
@@ -91,10 +93,10 @@ let first_name = "Fred"
 (* You can also write type annotations in definitions using a colon like so. *)
 let last_name : string = "Flintstone"
 
-(* String concatenation is done with the [( ^ )] operator.  *)
+(* String concatenation is done with the [( ^ )] operator. *)
 let full_name = first_name ^ " " ^ last_name
 
-(** ========== Booleans ========== **)                
+(** ========== Booleans ========== **)
 let a_boolean_false : bool = false
 
 (* You can use
@@ -118,6 +120,7 @@ let () =
   Stdio.print_endline "Hi, my name is ";
   Stdio.print_endline full_name;
   Stdio.print_endline " and I am 5 years old"
+;;
 
 (* When evaluating a unit operation on the toplevel, you should wrap it in a
    [let] binding, as in
@@ -134,8 +137,7 @@ let () =
 (* An aside on printing: Like many other programming languages, you can use
    formatted strings for printing! We also use the '\n' character for printing
    newlines. *)
-let () =
-  Stdio.printf "Hi, my name is %s and I am %d years old\n" full_name 5
+let () = Stdio.printf "Hi, my name is %s and I am %d years old\n" full_name 5
 
 (** ========== Inline Tests ========== *)
 (* The lines that follow are inline tests. Each evaluates a boolean expression.
@@ -161,8 +163,7 @@ let () =
    In words: [equal] takes two [int]s and returns a [bool]. The following line
    is applying that function to two inputs, [5] and [int_average 5 5]. *)
 
-let%test "Testing int_average..." =
-  Int.equal (int_average 5 5) 5
+let%test "Testing int_average..." = Int.equal (int_average 5 5) 5
 
 (* Modules can also contain operators. By convention, the equality operator is
    defined and equivalent to the [equal] function. To reference an operator in a
@@ -173,11 +174,6 @@ let%test "Testing int_average..." =
 
    [Int.(=)] is the same as [Int.equal]. *)
 
-let%test "Testing int_average..." =
-  Int.(=) (int_average 50 100) 75
-
-let%test "Testing float_average..." =
-  Float.(=) (float_average 5. 5.) 5.
-
-let%test "Testing float_average..." =
-  Float.equal (float_average 5. 10.) 7.5
+let%test "Testing int_average..." = Int.( = ) (int_average 50 100) 75
+let%test "Testing float_average..." = Float.( = ) (float_average 5. 5.) 5.
+let%test "Testing float_average..." = Float.equal (float_average 5. 10.) 7.5

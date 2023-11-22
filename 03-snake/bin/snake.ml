@@ -10,7 +10,7 @@ let every seconds ~f ~stop =
     if !stop
     then return ()
     else
-      Clock.after (Time.Span.of_sec seconds)
+      Clock.after (Time_float.Span.of_sec seconds)
       >>= fun () ->
       f ();
       loop ()
@@ -20,25 +20,25 @@ let every seconds ~f ~stop =
 
 let handle_keys (game : Game.t) ~game_over =
   every ~stop:game_over 0.01 ~f:(fun () ->
-      match Snake_graphics.read_key () with
-      | None -> ()
-      | Some key ->
-        let set_direction dir = Game.set_direction game dir in
-        (match key with
-        | 'w' -> set_direction Up
-        | 'a' -> set_direction Left
-        | 's' -> set_direction Down
-        | 'd' -> set_direction Right
-        | _ -> ()))
+    match Snake_graphics.read_key () with
+    | None -> ()
+    | Some key ->
+      let set_direction dir = Game.set_direction game dir in
+      (match key with
+       | 'w' -> set_direction Up
+       | 'a' -> set_direction Left
+       | 's' -> set_direction Down
+       | 'd' -> set_direction Right
+       | _ -> ()))
 ;;
 
 let handle_steps (game : Game.t) ~game_over =
   every ~stop:game_over 0.1 ~f:(fun () ->
-      Game.step game;
-      Snake_graphics.render game;
-      match Game.game_state game with
-      | Game_over _ | Win -> game_over := true
-      | In_progress -> ())
+    Game.step game;
+    Snake_graphics.render game;
+    match Game.game_state game with
+    | Game_over _ | Win -> game_over := true
+    | In_progress -> ())
 ;;
 
 let run () =
@@ -51,5 +51,5 @@ let run () =
 
 let () =
   run ();
-  Core_kernel.never_returns (Async.Scheduler.go ())
+  Core.never_returns (Async.Scheduler.go ())
 ;;

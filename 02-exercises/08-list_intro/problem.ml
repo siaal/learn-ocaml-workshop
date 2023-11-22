@@ -16,7 +16,7 @@ open! Base
    of the list tl".
 
    The following assertion shows that we can construct lists in two ways.  *)
-let () = assert ([%compare.equal: int list] [ 5; 1; 8; 4 ]  (5 :: 1 :: 8 :: 4  :: []))
+let () = assert ([%compare.equal: int list] [ 5; 1; 8; 4 ] [ 5; 1; 8; 4 ])
 
 (* When matching on a list, it's either empty or non-empty. To say it another
    way, it's either equal to [] or equal to (hd :: tl) where hd is the first
@@ -31,7 +31,11 @@ let rec length lst =
 ;;
 
 (* Write a function to add up the elements of a list by matching on it. *)
-let rec sum lst = failwith "For you to implement"
+let rec sum lst =
+  match lst with
+  | [] -> 0
+  | hd :: tl -> hd + sum tl
+;;
 
 let%test "Testing sum..." = Int.( = ) 0 (sum [])
 let%test "Testing sum..." = Int.( = ) 55 (sum [ 55 ])
@@ -39,7 +43,12 @@ let%test "Testing sum..." = Int.( = ) 0 (sum [ 5; -5; 1; -1 ])
 let%test "Testing sum..." = Int.( = ) 12 (sum [ 5; 5; 1; 1 ])
 
 (* Now write a function to multiply together the elements of a list. *)
-let rec product xs = failwith "For you to implement" 
+let rec product xs =
+  match xs with
+  | [] -> 1
+  | [ x ] -> x
+  | hd :: tl -> hd * product tl
+;;
 
 let%test "Testing product..." = Int.equal 1 (product [])
 let%test "Testing product..." = Int.equal 55 (product [ 55 ])

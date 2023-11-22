@@ -2,7 +2,7 @@ open Base
 open Lib
 
 (* This is the core logic that actually runs the game.  We have implemented all
-   of this for you, but feel free to read this as a reference.  *)
+   of this for you, but feel free to read this as a reference. *)
 
 let every seconds ~f ~stop =
   let open Async in
@@ -11,7 +11,7 @@ let every seconds ~f ~stop =
     if !stop
     then return ()
     else
-      Clock.after (Time.Span.of_sec seconds)
+      Clock.after (Time_float.Span.of_sec seconds)
       >>= fun () ->
       f ();
       loop ()
@@ -23,41 +23,41 @@ let every seconds ~f ~stop =
    and redraws the game *)
 let run_sweeper (game : Game.t) =
   every ~stop:game.game_over (Sweeper.seconds_per_step game.sweeper) ~f:(fun () ->
-      Sweeper.step game.sweeper;
-      Lumines_graphics.draw game)
+    Sweeper.step game.sweeper;
+    Lumines_graphics.draw game)
 ;;
 
 let handle_keys (game : Game.t) =
   every ~stop:game.game_over 0.01 ~f:(fun () ->
-      match Lumines_graphics.read_key () with
-      | None -> ()
-      | Some key ->
-        let update =
-          match key with
-          | 'a' ->
-            Game.move_left game;
-            true
-          | 'd' ->
-            Game.move_right game;
-            true
-          | 'w' ->
-            Game.rotate_left game;
-            true
-          | 's' ->
-            Game.rotate_right game;
-            true
-          | ' ' ->
-            Game.drop game;
-            true
-          | _ -> false
-        in
-        if update && not !(game.game_over) then Lumines_graphics.draw game)
+    match Lumines_graphics.read_key () with
+    | None -> ()
+    | Some key ->
+      let update =
+        match key with
+        | 'a' ->
+          Game.move_left game;
+          true
+        | 'd' ->
+          Game.move_right game;
+          true
+        | 'w' ->
+          Game.rotate_left game;
+          true
+        | 's' ->
+          Game.rotate_right game;
+          true
+        | ' ' ->
+          Game.drop game;
+          true
+        | _ -> false
+      in
+      if update && not !(game.game_over) then Lumines_graphics.draw game)
 ;;
 
 let handle_clock_tick (game : Game.t) =
   every ~stop:game.game_over 1. ~f:(fun () ->
-      Game.tick game;
-      Lumines_graphics.draw game)
+    Game.tick game;
+    Lumines_graphics.draw game)
 ;;
 
 (* this is the core loop that powers the game *)
@@ -71,5 +71,5 @@ let run () =
 
 let () =
   run ();
-  Core_kernel.never_returns (Async.Scheduler.go ())
+  Core.never_returns (Async.Scheduler.go ())
 ;;
